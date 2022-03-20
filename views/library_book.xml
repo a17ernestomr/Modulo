@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id='library_book_action' model='ir.actions.act_window'>
+        <field name="name">Library Books</field>
+        <field name="res_model">library.book</field>
+        <field name="view_mode">tree,form,kanban,calendar</field>
+    </record>
+
+    <menuitem name="My Library" id="library_base_menu" />
+    <menuitem name="Books" id="library_book_menu" parent="library_base_menu" action="library_book_action"/>
+
+    <!-- Form View -->
+    <record id="library_book_view_form" model="ir.ui.view">
+        <field name="name">Library Book Form</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+        
+            <form>
+                <header>
+               <!--   <div name="button_box" position="inside">
+                    <button class="oe_stat_button" string="Número autores " type="object" name="compute_count"
+                        icon="fa-car">
+                          <field string="Books" name="book_count" widget="statinfo"/>
+                      </button>
+                </div>-->
+                    <button name="make_available" string="Make Available" type="object"/>
+                    <button name="make_borrowed"  string="Make Borrowed" type="object"/>
+                    <button name="make_lost"  string="Make Lost" type="object"/>
+                    <button name="log_all_library_members"  string="Log Members" type="object"/>
+                    <button name="create_categories" string="Create Categories" type="object"/>
+                    <button name="change_release_date" string="Update Date" type="object"/>
+                    <button name="find_book" string="Find Book" type="object"/>
+                    <button name="filter_books" string="Filter Book " type="object"/>
+                    <button name="mapped_books" string="Mapped authors " type="object"/>
+                    <button name="sort_books" string="Sort Books " type="object"/>
+                    <button name="delete" string="Delete" type="object"/>
+
+                    <field string="Número de autores" name="author_number" widget="statinfo"/>
+                    <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="author_ids" widget="many2many_tags"/>
+                        <field name="number"/>
+
+                    </group>
+                    <group>
+                        <field name="category_id"/>
+                        <field name="date_release"/>
+                        
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+<!-- kanban-->
+<record model="ir.ui.view" id="My_kanban">
+        <field name="name">Kanban</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+
+            <kanban default_group_by="category_id">
+            <header>
+           <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+
+            </header>
+                <field name="name" />
+                <field name="author_ids" />
+                <field name="category_id" />
+                <field name="date_release"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click_edit">
+                            <div class="oe_kanban_details"/>
+                            
+                            <ul>
+                                
+                                     <li>Libro: <field name="name"/></li>
+                                     <li>Categoria: <field name="category_id"/></li>
+                                     <li>Autor: <field name="author_ids"/></li>
+                                     <li>Fecha: <field name="date_release"/></li>
+                                     <field string="Número de autores" name="author_number" widget="statinfo"/>
+                                     <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+
+
+                            </ul>
+                            
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- Calendar -->
+<record id="book_calendar_view" model="ir.ui.view">
+
+   <field name="name">calendar</field>
+
+   <field name="model">library.book</field>
+
+   <field name="arch" type="xml">
+
+       <calendar string="Books" date_start="date_release" color="state" quick_add="False" mode="month"
+
+           event_open_popup="1">
+
+           <field name="name"/>
+
+           <field name="date_release"/>
+
+           <field name="author_ids"/>
+
+
+       </calendar>
+
+   </field>
+
+</record>
+
+
+
+    <!-- Tree(list) View -->
+    <record id="library_book_view_tree" model="ir.ui.view">
+        <field name="name">Library Book List</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_release"/>
+                <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+                <field string="Número de autores" name="author_number" widget="statinfo"/>
+
+
+
+            </tree>
+
+        </field>
+
+    </record>
+
+   
+ 
+
+</odoo>
