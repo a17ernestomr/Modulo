@@ -25,7 +25,8 @@
                       </button>
                 </div>-->
                     <button name="make_available" string="Make Available" type="object"/>
-                    <button name="make_borrowed"  string="Make Borrowed" type="object"/>
+                    <button name="make_borrowed"  string="Borrow Book" type="object"/>
+                    <button name="devolver"  string="Return Book" type="object"/>
                     <button name="make_lost"  string="Make Lost" type="object"/>
                     <button name="log_all_library_members"  string="Log Members" type="object"/>
                     <button name="create_categories" string="Create Categories" type="object"/>
@@ -37,7 +38,7 @@
                     <button name="delete" string="Delete" type="object"/>
 
                     <field string="Número de autores" name="author_number" widget="statinfo"/>
-                    <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+                    <field string=" Histórico reservas" name="numBorrowed"  widget="statinfo"/>
 
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -46,6 +47,7 @@
                         <field name="name"/>
                         <field name="author_ids" widget="many2many_tags"/>
                         <field name="number"/>
+                        <field name="total_number"/>
 
                     </group>
                     <group>
@@ -64,10 +66,7 @@
         <field name="arch" type="xml">
 
             <kanban default_group_by="category_id">
-            <header>
-           <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
-
-            </header>
+ 
                 <field name="name" />
                 <field name="author_ids" />
                 <field name="category_id" />
@@ -84,7 +83,7 @@
                                      <li>Autor: <field name="author_ids"/></li>
                                      <li>Fecha: <field name="date_release"/></li>
                                      <field string="Número de autores" name="author_number" widget="statinfo"/>
-                                     <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
+                                     <field string=" Histórico reservas" name="numBorrowed"  widget="statinfo"/>
 
 
                             </ul>
@@ -132,8 +131,8 @@
             <tree>
                 <field name="name"/>
                 <field name="date_release"/>
-                <field string="Reservas Totales" name="numBorrowed"  widget="statinfo"/>
-                <field string="Número de autores" name="author_number" widget="statinfo"/>
+                <field string=" Histórico reservas" name="numBorrowed"  widget="statinfo"/>
+                <field string="Número de autores " name="author_number" widget="statinfo"/>
 
 
 

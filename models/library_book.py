@@ -17,6 +17,7 @@ class LibraryBook(models.Model):
     author_ids = fields.Many2many('res.partner', string='Authors')
     category_id = fields.Many2one('library.book.category', string='Category')
     number = fields.Integer('Existencias')
+    total_number = fields.Integer('Existencias Totales')
     numBorrowed = fields.Integer('Reservas')
     author_number = fields.Integer(compute='_compute_author_number')
 
@@ -25,9 +26,8 @@ class LibraryBook(models.Model):
     state = fields.Selection([
         ('draft', 'Unavailable'),
         ('available', 'Available'),
-        ('borrowed', 'Borrowed'),
-        ('lost', 'Lost')],
-        'State', default="borrowed")
+        ('borrowed', 'Borrowed')],
+        'State', default="available")
 
     @api.model
     def is_allowed_transition(self, old_state, new_state):
@@ -42,10 +42,19 @@ class LibraryBook(models.Model):
     def change_state(self, new_state):
         for book in self:
             if book.is_allowed_transition(book.state, new_state):
-                book.state = new_state
+                if new_state == 'borrowed':
+                    if self.number ==1:
+                        book.state = new_state    
+                else:
+                    book.state = new_state        
             else:
                 message = _('Moving from %s to %s is not allowd') % (book.state, new_state)
                 raise UserError(message)
+    
+    def devolver(self):
+        if self.state == 'available' and self.number<self.total_number:
+            self.number +=1
+
 
     def make_available(self):
         if self.state == 'borrowed':
@@ -59,7 +68,13 @@ class LibraryBook(models.Model):
         self.numBorrowed += 1
 
     def make_lost(self):
-        self.change_state('lost')
+        #self.change_state('lost')
+        if self.number >=2:
+             self.number -= 1
+        elif self.number == 1:
+            self.number = 0
+            for book in self:
+                book.state = 'borrowed'   
 
     def log_all_library_members(self):
         library_member_model = self.env['library.member']  # This is an empty recordset of model library.member
@@ -70,16 +85,16 @@ class LibraryBook(models.Model):
 
     def create_categories(self):
         categ1 = {
-            'name': 'Child category 1',
-            'description': 'Description for child 1'
+            'name': 'Novelas de ciencia ficción',
+            'description': 'Novelas ambientadas en el futuro'
         }
         categ2 = {
-            'name': 'Child category 2',
-            'description': 'Description for child 2'
+            'name': 'Novelas de terror',
+            'description': 'Novelas que generan miedo'
         }
         parent_category_val = {
-            'name': 'Parent category',
-            'description': 'Description for parent category',
+            'name': 'Acción',
+            'description': 'Novelas de acción y suspense',
             'child_ids': [
                 (0, 0, categ1),
                 (0, 0, categ2),
@@ -96,6 +111,8 @@ class LibraryBook(models.Model):
     def delete(self):
         self.ensure_one()
         self.unlink()
+        return True
+
 
     def find_book(self):
         domain = [
